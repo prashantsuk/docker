@@ -1,0 +1,46 @@
+name: Docker Apache Build and Run
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow when code is pushed to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger workflow on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Run the job on an Ubuntu machine
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx for building the Docker image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Cache Docker layers to speed up subsequent builds
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      # Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t apache2-image .
+
+      # Run the Docker container (this can be adjusted based on your needs)
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8080:80 apache2-image
+
+      # Optionally, check if Apache is running by querying the container
+      - name: Check Apache status
+        run: |
+          curl -s http://localhost:8080
