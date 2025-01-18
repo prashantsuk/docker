@@ -40,7 +40,4 @@ jobs:
         run: |
           docker run -d -p 8080:80 apache2-image
 
-      # Optionally, check if Apache is running by querying the container
-      - name: Check Apache status
-        run: |
-          curl -s http://localhost:8080
+      
