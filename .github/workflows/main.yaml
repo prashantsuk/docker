@@ -10,7 +10,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Run the job on an Ubuntu machine
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]  # Define the operating systems
+        # Add more parameters if needed, like different versions of Docker or Apache, etc.
+    
+    runs-on: ${{ matrix.os }}  # Dynamically pick the OS from the matrix
 
     steps:
       # Checkout the code from the repository
@@ -35,9 +40,9 @@ jobs:
         run: |
           docker build -t apache2-image .
 
-      # Run the Docker container (this can be adjusted based on your needs)
+      # Run the Docker container
       - name: Run Docker container
         run: |
           docker run -d -p 8080:80 apache2-image
 
-      
+     
