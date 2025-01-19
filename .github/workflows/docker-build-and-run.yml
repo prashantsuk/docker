@@ -36,7 +36,7 @@ jobs:
           docker run -d -p 8080:80 apache2-image
 
       # Step 6: Create README.md in prashantsuk/docker directory with build details
-      - name: Create README.md in prashantsuk/docker
+      - name: Create README.md in https://github.com/prashantsuk/docker/tree/main
         run: |
           # Create the directory if it doesn't exist
           mkdir -p prashantsuk/docker
