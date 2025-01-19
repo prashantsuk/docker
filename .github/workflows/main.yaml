@@ -7,4 +7,4 @@ on:
 
 jobs:
   use-reusable-workflow:
-    uses: ./docker-build-and-run.yml  # Call the reusable workflow defined in the same repository
+    uses: /docker/.github/workflow/docker-build-and-run.yml@main
