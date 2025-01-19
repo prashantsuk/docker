@@ -1,27 +1,22 @@
-name: Docker Apache Build and Run
+name: Docker Build and Run
 
 on:
-  push:
-    branches:
-      - main  # Trigger workflow when code is pushed to the main branch
-  pull_request:
-    branches:
-      - main  # Trigger workflow on pull requests to the main branch
+  workflow_call:  # Allows this workflow to be called by other workflows
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # Define the operating system for the job
+  build-and-run:
+    runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code from the repository
+      # Step 1: Checkout the code from the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up Docker Buildx for building the Docker image
+      # Step 2: Set up Docker Buildx for multi-platform builds
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Cache Docker layers to speed up subsequent builds
+      # Step 3: Cache Docker layers to speed up subsequent builds
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
@@ -30,12 +25,39 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
 
-      # Build the Docker image
+      # Step 4: Build the Docker image
       - name: Build Docker image
         run: |
           docker build -t apache2-image .
 
-      # Run the Docker container
+      # Step 5: Run the Docker container
       - name: Run Docker container
         run: |
           docker run -d -p 8080:80 apache2-image
+
+      # Step 6: Generate and update README.md with build status and timestamp
+      - name: Create and update README.md
+        run: |
+          # Generate current timestamp
+          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+          
+          # Create README.md content
+          echo "# Docker Build Status" > README.md
+          echo "Build Status: SUCCESSFUL" >> README.md
+          echo "Timestamp: $TIMESTAMP" >> README.md
+          echo "Docker Image: apache2-image" >> README.md
+          echo "Port Exposed: 8080" >> README.md
+
+          # Display the README content
+          cat README.md
+
+      # Step 7: Commit and push the updated README.md (if needed)
+      - name: Commit and push updated README.md
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "Update README.md with build status and timestamp"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate
