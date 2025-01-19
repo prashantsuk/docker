@@ -35,29 +35,21 @@ jobs:
         run: |
           docker run -d -p 8080:80 apache2-image
 
-      # Step 6: Generate and update README.md with build status and timestamp
-      - name: Create and update README.md
+      # Step 6: Create README.md in prashantsuk/docker directory with build details
+      - name: Create README.md in prashantsuk/docker
         run: |
+          # Create the directory if it doesn't exist
+          mkdir -p prashantsuk/docker
+
           # Generate current timestamp
           TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
           
-          # Create README.md content
-          echo "# Docker Build Status" > README.md
-          echo "Build Status: SUCCESSFUL" >> README.md
-          echo "Timestamp: $TIMESTAMP" >> README.md
-          echo "Docker Image: apache2-image" >> README.md
-          echo "Port Exposed: 8080" >> README.md
+          # Create README.md content and save it inside prashantsuk/docker
+          echo "# Docker Build Status" > prashantsuk/docker/README.md
+          echo "Build Status: SUCCESSFUL" >> prashantsuk/docker/README.md
+          echo "Timestamp: $TIMESTAMP" >> prashantsuk/docker/README.md
+          echo "Docker Image: apache2-image" >> prashantsuk/docker/README.md
+          echo "Port Exposed: 8080" >> prashantsuk/docker/README.md
 
-          # Display the README content
-          cat README.md
-
-      # Step 7: Commit and push the updated README.md (if needed)
-      - name: Commit and push updated README.md
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add README.md
-          git commit -m "Update README.md with build status and timestamp"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate
+          # Display the content of the README.md to ensure it's created
+          cat prashantsuk/docker/README.md
