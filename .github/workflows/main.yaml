@@ -10,12 +10,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]  # Define the operating systems
-        # Add more parameters if needed, like different versions of Docker or Apache, etc.
-    
-    runs-on: ${{ matrix.os }}  # Dynamically pick the OS from the matrix
+    runs-on: ubuntu-latest  # Define the operating system for the job
 
     steps:
       # Checkout the code from the repository
@@ -44,5 +39,3 @@ jobs:
       - name: Run Docker container
         run: |
           docker run -d -p 8080:80 apache2-image
-
-     
